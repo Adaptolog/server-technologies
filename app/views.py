@@ -1,11 +1,12 @@
-from flask import jsonify
+from flask import jsonify, request
 from app import app
 import datetime
+from app.models import data_store
 
 
 @app.route('/')
 def hello():
-    return jsonify({"message": "Welcome to the Flask API!"})
+    return jsonify({"message": "Welcome to the Expense Tracking API!"})
 
 
 @app.route('/healthcheck', methods=['GET'])
@@ -24,3 +25,44 @@ def healthcheck():
             "status": "error",
             "error": str(e)
         }), 500
+
+
+# User endpoints
+@app.route('/user/<user_id>', methods=['GET'])
+def get_user(user_id):
+    """Get user by ID"""
+    user = data_store.get_user(user_id)
+    if user:
+        return jsonify(user.to_dict()), 200
+    return jsonify({"error": "User not found"}), 404
+
+
+@app.route('/user/<user_id>', methods=['DELETE'])
+def delete_user(user_id):
+    """Delete user by ID"""
+    if data_store.delete_user(user_id):
+        return jsonify({"message": "User deleted successfully"}), 200
+    return jsonify({"error": "User not found"}), 404
+
+
+@app.route('/user', methods=['POST'])
+def create_user():
+    """Create a new user"""
+    data = request.get_json()
+    
+    if not data or 'name' not in data:
+        return jsonify({"error": "Name is required"}), 400
+    
+    name = data['name'].strip()
+    if not name:
+        return jsonify({"error": "Name cannot be empty"}), 400
+    
+    user = data_store.add_user(name)
+    return jsonify(user.to_dict()), 201
+
+
+@app.route('/users', methods=['GET'])
+def get_all_users():
+    """Get all users"""
+    users = data_store.get_all_users()
+    return jsonify([user.to_dict() for user in users]), 200
