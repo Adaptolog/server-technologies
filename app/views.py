@@ -97,3 +97,61 @@ def delete_category(category_id):
     if data_store.delete_category(category_id):
         return jsonify({"message": "Category deleted successfully"}), 200
     return jsonify({"error": "Category not found"}), 404
+
+# Expense record endpoints
+@app.route('/record/<record_id>', methods=['GET'])
+def get_record(record_id):
+    """Get record by ID"""
+    record = data_store.get_record(record_id)
+    if record:
+        return jsonify(record.to_dict()), 200
+    return jsonify({"error": "Record not found"}), 404
+
+
+@app.route('/record/<record_id>', methods=['DELETE'])
+def delete_record(record_id):
+    """Delete record by ID"""
+    if data_store.delete_record(record_id):
+        return jsonify({"message": "Record deleted successfully"}), 200
+    return jsonify({"error": "Record not found"}), 404
+
+
+@app.route('/record', methods=['POST'])
+def create_record():
+    """Create a new expense record"""
+    data = request.get_json()
+    
+    required_fields = ['user_id', 'category_id', 'amount']
+    if not data or not all(field in data for field in required_fields):
+        return jsonify({"error": "user_id, category_id, and amount are required"}), 400
+    
+    try:
+        user_id = data['user_id'].strip()
+        category_id = data['category_id'].strip()
+        amount = float(data['amount'])
+        
+        if amount <= 0:
+            return jsonify({"error": "Amount must be positive"}), 400
+        
+        record = data_store.add_record(user_id, category_id, amount)
+        if record:
+            return jsonify(record.to_dict()), 201
+        else:
+            return jsonify({"error": "User or category not found"}), 404
+            
+    except ValueError:
+        return jsonify({"error": "Amount must be a valid number"}), 400
+
+
+@app.route('/record', methods=['GET'])
+def get_records():
+    """Get records with optional user_id and category_id filters"""
+    user_id = request.args.get('user_id')
+    category_id = request.args.get('category_id')
+    
+    # At least one filter must be provided
+    if user_id is None and category_id is None:
+        return jsonify({"error": "At least one filter (user_id or category_id) is required"}), 400
+    
+    records = data_store.get_all_records(user_id, category_id)
+    return jsonify([record.to_dict() for record in records]), 200
