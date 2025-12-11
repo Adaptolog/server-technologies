@@ -2,7 +2,12 @@ from flask import jsonify, request
 from app import app
 import datetime
 from app.models import data_store
-
+from app.utils import (
+    get_current_timestamp, 
+    validate_user_data, 
+    validate_category_data, 
+    validate_record_data
+)
 
 @app.route('/')
 def hello():
@@ -50,13 +55,11 @@ def create_user():
     """Create a new user"""
     data = request.get_json()
     
-    if not data or 'name' not in data:
-        return jsonify({"error": "Name is required"}), 400
+    error = validate_user_data(data)
+    if error:
+        return jsonify({"error": error}), 400
     
     name = data['name'].strip()
-    if not name:
-        return jsonify({"error": "Name cannot be empty"}), 400
-    
     user = data_store.add_user(name)
     return jsonify(user.to_dict()), 201
 
@@ -68,11 +71,18 @@ def get_all_users():
     return jsonify([user.to_dict() for user in users]), 200
 
 # Category endpoints
-@app.route('/category', methods=['GET'])
-def get_all_categories():
-    """Get all categories"""
-    categories = data_store.get_all_categories()
-    return jsonify([category.to_dict() for category in categories]), 200
+@app.route('/category', methods=['POST'])
+def create_category():
+    """Create a new category"""
+    data = request.get_json()
+    
+    error = validate_category_data(data)
+    if error:
+        return jsonify({"error": error}), 400
+    
+    name = data['name'].strip()
+    category = data_store.add_category(name)
+    return jsonify(category.to_dict()), 201
 
 
 @app.route('/category', methods=['POST'])
@@ -121,27 +131,19 @@ def create_record():
     """Create a new expense record"""
     data = request.get_json()
     
-    required_fields = ['user_id', 'category_id', 'amount']
-    if not data or not all(field in data for field in required_fields):
-        return jsonify({"error": "user_id, category_id, and amount are required"}), 400
+    error = validate_record_data(data)
+    if error:
+        return jsonify({"error": error}), 400
     
-    try:
-        user_id = data['user_id'].strip()
-        category_id = data['category_id'].strip()
-        amount = float(data['amount'])
-        
-        if amount <= 0:
-            return jsonify({"error": "Amount must be positive"}), 400
-        
-        record = data_store.add_record(user_id, category_id, amount)
-        if record:
-            return jsonify(record.to_dict()), 201
-        else:
-            return jsonify({"error": "User or category not found"}), 404
-            
-    except ValueError:
-        return jsonify({"error": "Amount must be a valid number"}), 400
-
+    user_id = data['user_id'].strip()
+    category_id = data['category_id'].strip()
+    amount = float(data['amount'])
+    
+    record = data_store.add_record(user_id, category_id, amount)
+    if record:
+        return jsonify(record.to_dict()), 201
+    else:
+        return jsonify({"error": "User or category not found"}), 404
 
 @app.route('/record', methods=['GET'])
 def get_records():
