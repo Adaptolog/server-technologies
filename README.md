@@ -40,10 +40,10 @@ GET /healthcheck
 ```
 
 ## Демо
-Задеплоєна версія доступна за посиланням:
+Задеплоєна версія доступна за посиланням: https://flask-healthcheck-app.onrender.com
 
 ## Перевірка роботи
-1. Відкрийте
+1. Відкрийте https://flask-healthcheck-app.onrender.com/healthcheck
 2. Має отримати відповідь:
 ```json
 {
