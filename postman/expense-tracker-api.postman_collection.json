@@ -1,0 +1,425 @@
+{
+	"info": {
+		"_postman_id": "6b5b5b5b-5b5b-5b5b-5b5b-5b5b5b5b5b5b",
+		"name": "Expense Tracker API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "123456"
+	},
+	"item": [
+		{
+			"name": "Healthcheck",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/healthcheck",
+					"host": ["{{base_url}}"],
+					"path": ["healthcheck"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Create User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"John Doe\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/user",
+							"host": ["{{base_url}}"],
+							"path": ["user"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users",
+							"host": ["{{base_url}}"],
+							"path": ["users"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/user/:user_id",
+							"host": ["{{base_url}}"],
+							"path": ["user", ":user_id"],
+							"variable": [
+								{
+									"key": "user_id",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/user/:user_id",
+							"host": ["{{base_url}}"],
+							"path": ["user", ":user_id"],
+							"variable": [
+								{
+									"key": "user_id",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Categories",
+			"item": [
+				{
+					"name": "Create Category",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Food\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/category",
+							"host": ["{{base_url}}"],
+							"path": ["category"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Categories",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/category",
+							"host": ["{{base_url}}"],
+							"path": ["category"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Category",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/category/:category_id",
+							"host": ["{{base_url}}"],
+							"path": ["category", ":category_id"],
+							"variable": [
+								{
+									"key": "category_id",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Expense Records",
+			"item": [
+				{
+					"name": "Create Record",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user_id\": \"\",\n    \"category_id\": \"\",\n    \"amount\": 50.0\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/record",
+							"host": ["{{base_url}}"],
+							"path": ["record"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Record by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/record/:record_id",
+							"host": ["{{base_url}}"],
+							"path": ["record", ":record_id"],
+							"variable": [
+								{
+									"key": "record_id",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Records with Filters",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/record?user_id=&category_id=",
+							"host": ["{{base_url}}"],
+							"path": ["record"],
+							"query": [
+								{
+									"key": "user_id",
+									"value": ""
+								},
+								{
+									"key": "category_id",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Record",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/record/:record_id",
+							"host": ["{{base_url}}"],
+							"path": ["record", ":record_id"],
+							"variable": [
+								{
+									"key": "record_id",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Complete Flow",
+			"item": [
+				{
+					"name": "1. Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/healthcheck",
+							"host": ["{{base_url}}"],
+							"path": ["healthcheck"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2. Create User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Test User\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/user",
+							"host": ["{{base_url}}"],
+							"path": ["user"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "3. Create Category",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Test Category\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/category",
+							"host": ["{{base_url}}"],
+							"path": ["category"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "4. Create Expense Record",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user_id\": \"{{user_id}}\",\n    \"category_id\": \"{{category_id}}\",\n    \"amount\": 100.0\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/record",
+							"host": ["{{base_url}}"],
+							"path": ["record"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "5. Get User Records",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/record?user_id={{user_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["record"],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "{{user_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "6. Cleanup - Delete Record",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/record/{{record_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["record", "{{record_id}}"]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Set environment variables from responses",
+					"if (pm.response.code === 201 || pm.response.code === 200) {",
+					"    const responseData = pm.response.json();",
+					"    ",
+					"    // Set user_id from user creation",
+					"    if (pm.info.requestName === 'Create User' && responseData.id) {",
+					"        pm.environment.set('user_id', responseData.id);",
+					"    }",
+					"    ",
+					"    // Set category_id from category creation",
+					"    if (pm.info.requestName === 'Create Category' && responseData.id) {",
+					"        pm.environment.set('category_id', responseData.id);",
+					"    }",
+					"    ",
+					"    // Set record_id from record creation",
+					"    if (pm.info.requestName === 'Create Expense Record' && responseData.id) {",
+					"        pm.environment.set('record_id', responseData.id);",
+					"    }",
+						"}",
+					"",
+					"// Test assertions",
+					"pm.test('Status code is successful', function () {",
+					"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+					"});"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": ""
+		},
+		{
+			"key": "user_id",
+			"value": ""
+		},
+		{
+			"key": "category_id",
+			"value": ""
+		},
+		{
+			"key": "record_id",
+			"value": ""
+		}
+	]
+}
