@@ -66,3 +66,34 @@ def get_all_users():
     """Get all users"""
     users = data_store.get_all_users()
     return jsonify([user.to_dict() for user in users]), 200
+
+# Category endpoints
+@app.route('/category', methods=['GET'])
+def get_all_categories():
+    """Get all categories"""
+    categories = data_store.get_all_categories()
+    return jsonify([category.to_dict() for category in categories]), 200
+
+
+@app.route('/category', methods=['POST'])
+def create_category():
+    """Create a new category"""
+    data = request.get_json()
+    
+    if not data or 'name' not in data:
+        return jsonify({"error": "Name is required"}), 400
+    
+    name = data['name'].strip()
+    if not name:
+        return jsonify({"error": "Name cannot be empty"}), 400
+    
+    category = data_store.add_category(name)
+    return jsonify(category.to_dict()), 201
+
+
+@app.route('/category/<category_id>', methods=['DELETE'])
+def delete_category(category_id):
+    """Delete category by ID"""
+    if data_store.delete_category(category_id):
+        return jsonify({"message": "Category deleted successfully"}), 200
+    return jsonify({"error": "Category not found"}), 404
