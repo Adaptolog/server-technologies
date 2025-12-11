@@ -9,6 +9,7 @@ from app.utils import (
     validate_record_data
 )
 
+
 @app.route('/')
 def hello():
     return jsonify({"message": "Welcome to the Expense Tracking API!"})
@@ -34,7 +35,7 @@ def healthcheck():
 
 # User endpoints
 @app.route('/user/<user_id>', methods=['GET'])
-def get_user(user_id):
+def get_user_by_id(user_id):
     """Get user by ID"""
     user = data_store.get_user(user_id)
     if user:
@@ -43,7 +44,7 @@ def get_user(user_id):
 
 
 @app.route('/user/<user_id>', methods=['DELETE'])
-def delete_user(user_id):
+def delete_user_by_id(user_id):
     """Delete user by ID"""
     if data_store.delete_user(user_id):
         return jsonify({"message": "User deleted successfully"}), 200
@@ -51,7 +52,7 @@ def delete_user(user_id):
 
 
 @app.route('/user', methods=['POST'])
-def create_user():
+def create_new_user():
     """Create a new user"""
     data = request.get_json()
     
@@ -70,9 +71,17 @@ def get_all_users():
     users = data_store.get_all_users()
     return jsonify([user.to_dict() for user in users]), 200
 
+
 # Category endpoints
+@app.route('/category', methods=['GET'])
+def get_all_categories():
+    """Get all categories"""
+    categories = data_store.get_all_categories()
+    return jsonify([category.to_dict() for category in categories]), 200
+
+
 @app.route('/category', methods=['POST'])
-def create_category():
+def create_new_category():
     """Create a new category"""
     data = request.get_json()
     
@@ -85,32 +94,17 @@ def create_category():
     return jsonify(category.to_dict()), 201
 
 
-@app.route('/category', methods=['POST'])
-def create_category():
-    """Create a new category"""
-    data = request.get_json()
-    
-    if not data or 'name' not in data:
-        return jsonify({"error": "Name is required"}), 400
-    
-    name = data['name'].strip()
-    if not name:
-        return jsonify({"error": "Name cannot be empty"}), 400
-    
-    category = data_store.add_category(name)
-    return jsonify(category.to_dict()), 201
-
-
 @app.route('/category/<category_id>', methods=['DELETE'])
-def delete_category(category_id):
+def delete_category_by_id(category_id):
     """Delete category by ID"""
     if data_store.delete_category(category_id):
         return jsonify({"message": "Category deleted successfully"}), 200
     return jsonify({"error": "Category not found"}), 404
 
+
 # Expense record endpoints
 @app.route('/record/<record_id>', methods=['GET'])
-def get_record(record_id):
+def get_record_by_id(record_id):
     """Get record by ID"""
     record = data_store.get_record(record_id)
     if record:
@@ -119,7 +113,7 @@ def get_record(record_id):
 
 
 @app.route('/record/<record_id>', methods=['DELETE'])
-def delete_record(record_id):
+def delete_record_by_id(record_id):
     """Delete record by ID"""
     if data_store.delete_record(record_id):
         return jsonify({"message": "Record deleted successfully"}), 200
@@ -127,7 +121,7 @@ def delete_record(record_id):
 
 
 @app.route('/record', methods=['POST'])
-def create_record():
+def create_new_record():
     """Create a new expense record"""
     data = request.get_json()
     
@@ -145,8 +139,9 @@ def create_record():
     else:
         return jsonify({"error": "User or category not found"}), 404
 
+
 @app.route('/record', methods=['GET'])
-def get_records():
+def get_filtered_records():
     """Get records with optional user_id and category_id filters"""
     user_id = request.args.get('user_id')
     category_id = request.args.get('category_id')

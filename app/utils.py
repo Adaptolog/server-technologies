@@ -1,5 +1,7 @@
 """Utility functions for the application"""
 import datetime
+import os
+import sys
 from typing import Optional, Dict, Any
 
 
@@ -64,3 +66,18 @@ def validate_record_data(data: Dict[str, Any]) -> Optional[str]:
         return "Amount must be a valid number"
     
     return None
+
+
+def is_windows() -> bool:
+    """Check if running on Windows"""
+    return os.name == 'nt'
+
+
+def is_linux() -> bool:
+    """Check if running on Linux"""
+    return os.name == 'posix' and 'linux' in sys.platform
+
+
+def is_macos() -> bool:
+    """Check if running on macOS"""
+    return os.name == 'posix' and 'darwin' in sys.platform

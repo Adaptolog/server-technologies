@@ -8,20 +8,18 @@ class APITestCase(unittest.TestCase):
     def setUp(self):
         self.app = app.test_client()
         self.app.testing = True
-        
-        # Clear and reinitialize data
+
         data_store.users.clear()
         data_store.categories.clear()
         data_store.records.clear()
-        
-        # Add sample data
+
         self.user1 = data_store.add_user("Test User 1")
         self.user2 = data_store.add_user("Test User 2")
         self.category1 = data_store.add_category("Test Category 1")
         self.category2 = data_store.add_category("Test Category 2")
         self.record1 = data_store.add_record(self.user1.id, self.category1.id, 100.0)
         self.record2 = data_store.add_record(self.user2.id, self.category2.id, 200.0)
-    
+
     def test_healthcheck(self):
         """Test healthcheck endpoint"""
         response = self.app.get('/healthcheck')
