@@ -1,38 +1,83 @@
-# Postman Collection for Expense Tracker API
+1. Healthcheck & Info
 
-This directory contains Postman collections and environments for testing the Expense Tracker API.
+    GET /healthcheck - Перевірка стану сервера
 
-## Files
+    GET / - Інформація про API
 
-1. `expense-tracker-api.postman_collection.json` - Main collection with all API endpoints
-2. `environments/local.postman_environment.json` - Environment for local development
-3. `environments/production.postman_environment.json` - Environment for production
+    GET /swagger-ui - Інтерактивна документація Swagger
 
-## How to Use
+2. Authentication
 
-1. Import the collection into Postman:
-   - Open Postman
-   - Click "Import"
-   - Select the `expense-tracker-api.postman_collection.json` file
+    POST /api/auth/register - Реєстрація нового користувача
 
-2. Import environments:
-   - Click "Import" for each environment file
-   - Or create environments manually with the variables:
-     - `base_url`: Base URL of the API (http://localhost:5000 for local, your Render URL for production)
-     - `user_id`: Will be automatically set when creating users
-     - `category_id`: Will be automatically set when creating categories
-     - `record_id`: Will be automatically set when creating records
+    POST /api/auth/login - Вхід та отримання JWT токенів
 
-3. Run the "Complete Flow" folder to test the full workflow
+    POST /api/auth/refresh - Оновлення access токена
 
-## Complete Flow
+    GET /api/auth/me - Профіль поточного користувача
 
-The collection includes a "Complete Flow" folder that demonstrates the full API workflow:
-1. Health check
-2. Create a user
-3. Create a category
-4. Create an expense record
-5. Get user's records
-6. Clean up (delete record)
+    POST /api/auth/logout - Вихід з системи
 
-Variables are automatically passed between requests using Postman tests.
+3. Users
+
+    GET /api/users - Список користувачів
+
+    GET /api/users/{id} - Отримання користувача за ID
+
+    PUT /api/users/{id} - Оновлення користувача
+
+    DELETE /api/users/{id} - Видалення користувача
+
+    GET /api/users/{id}/stats - Статистика користувача
+
+4. Accounts
+
+    GET /api/accounts - Список рахунків
+
+    POST /api/accounts - Створення рахунку
+
+    GET /api/accounts/{id} - Отримання рахунку
+
+    DELETE /api/accounts/{id} - Видалення рахунку
+
+    GET /api/accounts/{id}/balance - Баланс рахунку
+
+5. Income Management
+
+    POST /api/accounts/{id}/income - Додавання доходу
+
+    GET /api/accounts/{id}/income - Історія доходів
+
+    GET /api/accounts/{id}/income?start_date=...&end_date=... - Фільтрація за датами
+
+6. Categories
+
+    GET /api/categories - Всі категорії
+
+    GET /api/categories/global - Тільки глобальні категорії
+
+    POST /api/categories - Створення категорії
+
+    PUT /api/categories/{id} - Оновлення категорії
+
+    DELETE /api/categories/{id} - Видалення категорії
+
+Типи категорій:
+
+    Глобальні (is_global: true) - доступні всім
+
+    Персональні (is_global: false) - тільки для власника
+
+7. Expenses (Оновлено - вимагає авторизації)
+
+    GET /api/expenses - Список витрат
+
+    GET /api/expenses/summary - Статистика витрат
+
+    POST /api/expenses - Створення витрати
+
+    GET /api/expenses/{id} - Отримання витрати
+
+    PUT /api/expenses/{id} - Оновлення витрати
+
+    DELETE /api/expenses/{id} - Видалення витрати
