@@ -168,12 +168,11 @@ CRUD та статистика.
 
 ## Тестування API
 
-Postman або curl.
+Postman.
 
-## Автоматичні тести
+## Тести
 
-    pytest tests/
-    pytest --cov=app tests/
+[postman/](https://github.com/Adaptolog/server-technologies/blob/master/postman/expense-tracker-api.postman_collection%20v4.json)
 
 ## Демо
 
@@ -185,12 +184,3 @@ https://flask-healthcheck-app.onrender.com
 -   PostgreSQL 12+
 -   512MB RAM
 -   1GB диску
-
-## Ліцензія
-
-Проєкт створено для навчальних цілей.
-
-## Контакти
-
-Бондар Ярослав, ІМ-33 Дисципліна: Технології серверного програмного
-забезпечення
