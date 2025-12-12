@@ -4,11 +4,13 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_cors import CORS
 from flask_smorest import Api
+from flask_jwt_extended import JWTManager
 
 # Initialize extensions
 db = SQLAlchemy()
 migrate = Migrate()
 api = Api()
+jwt = JWTManager()
 
 def create_app(config_name=None):
     """Application factory."""
@@ -31,21 +33,27 @@ def create_app(config_name=None):
     CORS(app)
     db.init_app(app)
     migrate.init_app(app, db)
+    jwt.init_app(app)
     
     # Initialize API
     api.init_app(app)
+    
+    # Register JWT error handlers
+    register_jwt_handlers(app)
     
     # Register error handlers
     register_error_handlers(app)
     
     # Register blueprints
     from app.routes.healthcheck import healthcheck_bp
+    from app.routes.auth_routes import auth_bp
     from app.routes.user_routes import user_bp
     from app.routes.category_routes import category_bp
     from app.routes.account_routes import account_bp
     from app.routes.expense_routes import expense_bp
     
     app.register_blueprint(healthcheck_bp)
+    app.register_blueprint(auth_bp)
     api.register_blueprint(user_bp)
     api.register_blueprint(category_bp)
     api.register_blueprint(account_bp)
@@ -56,6 +64,55 @@ def create_app(config_name=None):
         db.create_all()
     
     return app
+
+def register_jwt_handlers(app):
+    """Register JWT error handlers."""
+    
+    @jwt.expired_token_loader
+    def expired_token_callback(jwt_header, jwt_payload):
+        app.logger.error(f'Expired token: {jwt_payload}')
+        return jsonify({
+            "message": "The token has expired.",
+            "error": "token_expired"
+        }), 401
+    
+    @jwt.invalid_token_loader
+    def invalid_token_callback(error):
+        app.logger.error(f'Invalid token: {error}')
+        return jsonify({
+            "message": "Signature verification failed.",
+            "error": "invalid_token"
+        }), 401
+    
+    @jwt.unauthorized_loader
+    def missing_token_callback(error):
+        app.logger.error(f'Missing token: {error}')
+        return jsonify({
+            "description": "Request does not contain an access token.",
+            "error": "authorization_required",
+        }), 401
+    
+    @jwt.needs_fresh_token_loader
+    def token_not_fresh_callback(jwt_header, jwt_payload):
+        app.logger.error(f'Token not fresh: {jwt_payload}')
+        return jsonify({
+            "description": "The token is not fresh.",
+            "error": "fresh_token_required"
+        }), 401
+    
+    @jwt.revoked_token_loader
+    def revoked_token_callback(jwt_header, jwt_payload):
+        app.logger.error(f'Revoked token: {jwt_payload}')
+        return jsonify({
+            "description": "The token has been revoked.",
+            "error": "token_revoked"
+        }), 401
+    
+    @jwt.user_lookup_loader
+    def user_lookup_callback(_jwt_header, jwt_data):
+        identity = jwt_data["sub"]
+        from app.models.user import User
+        return User.query.filter_by(id=identity).one_or_none()
 
 def register_error_handlers(app):
     """Register error handlers."""
@@ -106,3 +163,11 @@ def register_error_handlers(app):
             "error": "Internal Server Error",
             "message": "An unexpected error occurred"
         }), 500
+
+from app.models.user import User
+from app.models.category import Category
+from app.models.account import Account
+from app.models.income import Income
+from app.models.expense import Expense
+
+__all__ = ['User', 'Category', 'Account', 'Income', 'Expense']
