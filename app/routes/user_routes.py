@@ -1,5 +1,6 @@
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
+from flask import current_app
 from app import db
 from app.models.user import User
 from app.schemas.user_schema import UserSchema, UserQuerySchema
@@ -59,7 +60,7 @@ class Users(MethodView):
             
         except Exception as e:
             db.session.rollback()
-            app.logger.error(f"Error creating user: {str(e)}")
+            current_app.logger.error(f"Error creating user: {str(e)}")
             abort(500, message=f"Failed to create user: {str(e)}")
 
 @user_bp.route('/<user_id>')
