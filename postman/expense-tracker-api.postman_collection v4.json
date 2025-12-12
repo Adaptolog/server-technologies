@@ -1,0 +1,1964 @@
+{
+	"info": {
+		"_postman_id": "6b5b5b5b-5b5b-5b5b-5b5b-5b5b5b5b5b5b",
+		"name": "Expense Tracker API v3.0 (JWT Auth)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "123456",
+		"description": "API для обліку витрат з JWT аутентифікацією (Лабораторна робота 4)"
+	},
+	"item": [
+		{
+			"name": "🧪 Healthcheck & Info",
+			"item": [
+				{
+					"name": "Healthcheck",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/healthcheck",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"healthcheck"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get API Info",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Swagger UI",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/swagger-ui",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"swagger-ui"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "🔐 Authentication (Нові)",
+			"item": [
+				{
+					"name": "Register User",
+					"request": {
+						"auth": null,
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"John Doe\",\n    \"email\": \"john@example.com\",\n    \"password\": \"password123\",\n    \"confirm_password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"john@example.com\",\n    \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Current User Profile",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/auth/me",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh Token",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{refresh_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/refresh",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"refresh"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/logout",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Test Invalid Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"wrong@example.com\",\n    \"password\": \"wrongpassword\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Test Invalid Register (Duplicate Email)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Another John\",\n    \"email\": \"john@example.com\",\n    \"password\": \"password123\",\n    \"confirm_password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Test Invalid Register (Password Mismatch)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Test User\",\n    \"email\": \"test@example.com\",\n    \"password\": \"password123\",\n    \"confirm_password\": \"differentpassword\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "👥 Users (Оновлені - потребують авторизації)",
+			"item": [
+				{
+					"name": "Get All Users (Auth Required)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/users",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User by ID (Auth Required)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/users/{{user_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"{{user_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User (Auth Required)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"John Smith Updated\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/{{user_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"{{user_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User (Auth Required)",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/users/{{user_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"{{user_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Statistics (Auth Required)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/users/{{user_id}}/stats",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"{{user_id}}",
+								"stats"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Test Access Other User's Data (Should Fail)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/users/other_user_id_here",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"other_user_id_here"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "💼 Accounts (Оновлені - потребують авторизації)",
+			"item": [
+				{
+					"name": "Get All Accounts (Auth Required)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/accounts",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"accounts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Accounts (Auth Required)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/accounts?user_id={{current_user_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"accounts"
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "{{current_user_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Account (Auth Required)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user_id\": \"{{current_user_id}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/accounts",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"accounts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Account by ID (Auth Required)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/accounts/{{account_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"accounts",
+								"{{account_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Account (Auth Required)",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/accounts/{{account_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"accounts",
+								"{{account_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Account Balance (Auth Required)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/accounts/{{account_id}}/balance",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"accounts",
+								"{{account_id}}",
+								"balance"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "💰 Income Management (Оновлені - потребують авторизації)",
+			"item": [
+				{
+					"name": "Add Income to Account (Auth Required)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"amount\": 1000.0,\n    \"description\": \"Salary\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/accounts/{{account_id}}/income",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"accounts",
+								"{{account_id}}",
+								"income"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Income History (Auth Required)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/accounts/{{account_id}}/income",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"accounts",
+								"{{account_id}}",
+								"income"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Income History with Date Range (Auth Required)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/accounts/{{account_id}}/income?start_date=2024-01-01&end_date=2024-12-31",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"accounts",
+								"{{account_id}}",
+								"income"
+							],
+							"query": [
+								{
+									"key": "start_date",
+									"value": "2024-01-01"
+								},
+								{
+									"key": "end_date",
+									"value": "2024-12-31"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "📂 Categories (Оновлені - потребують авторизації)",
+			"item": [
+				{
+					"name": "Get All Categories (Auth Required)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/categories",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Global Categories (Auth Required)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/categories/global",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"categories",
+								"global"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Personal Category (Auth Required)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Personal Expense\",\n    \"is_global\": false\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/categories",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Category by ID (Auth Required)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/categories/{{category_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"categories",
+								"{{category_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Category (Auth Required)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Updated Category Name\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/categories/{{category_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"categories",
+								"{{category_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Category (Auth Required)",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/categories/{{category_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"categories",
+								"{{category_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "💸 Expenses (Оновлені - потребують авторизації)",
+			"item": [
+				{
+					"name": "Get All Expenses (Auth Required)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/expenses",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"expenses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Expense Summary (Auth Required)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/expenses/summary",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"expenses",
+								"summary"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Expense (Auth Required)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user_id\": \"{{current_user_id}}\",\n    \"category_id\": \"{{category_id}}\",\n    \"account_id\": \"{{account_id}}\",\n    \"amount\": 100.0,\n    \"description\": \"Lunch\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/expenses",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"expenses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Expense by ID (Auth Required)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/expenses/{{expense_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"expenses",
+								"{{expense_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Expense (Auth Required)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"amount\": 150.0,\n    \"description\": \"Lunch Updated\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/expenses/{{expense_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"expenses",
+								"{{expense_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Expense (Auth Required)",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/expenses/{{expense_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"expenses",
+								"{{expense_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "🚀 Complete JWT Auth Flow",
+			"item": [
+				{
+					"name": "1. Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/healthcheck",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"healthcheck"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2. Register New User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Alice Johnson\",\n    \"email\": \"alice@example.com\",\n    \"password\": \"secure123\",\n    \"confirm_password\": \"secure123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "3. Login to Get Token",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"alice@example.com\",\n    \"password\": \"secure123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "4. Get Current User Profile (Using Token)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/auth/me",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "5. Get User's Account",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/accounts",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"accounts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "6. Add Income to Account",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"amount\": 2000.0,\n    \"description\": \"Monthly Salary\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/accounts/{{account_id}}/income",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"accounts",
+								"{{account_id}}",
+								"income"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "7. Check Account Balance",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/accounts/{{account_id}}/balance",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"accounts",
+								"{{account_id}}",
+								"balance"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "8. Get Global Categories",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/categories/global",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"categories",
+								"global"
+							]
+						}
+					},
+										"response": []
+				},
+				{
+					"name": "9. Create Personal Category",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Gym Membership\",\n    \"is_global\": false\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/categories",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "10. Create Expense",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user_id\": \"{{current_user_id}}\",\n    \"category_id\": \"{{category_id}}\",\n    \"account_id\": \"{{account_id}}\",\n    \"amount\": 50.0,\n    \"description\": \"Gym fee\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/expenses",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"expenses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "11. Check Updated Balance",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/accounts/{{account_id}}/balance",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"accounts",
+								"{{account_id}}",
+								"balance"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "12. Get Expense Summary",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/expenses/summary",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"expenses",
+								"summary"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "13. Get Income History",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/accounts/{{account_id}}/income",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"accounts",
+								"{{account_id}}",
+								"income"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "14. Update Expense",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"amount\": 45.0,\n    \"description\": \"Gym fee with discount\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/expenses/{{expense_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"expenses",
+								"{{expense_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "15. Test Access Without Token (Should Fail)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/expenses",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"expenses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "16. Test Access With Invalid Token (Should Fail)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer invalid.token.here"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/expenses",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"expenses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "17. Refresh Token",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{refresh_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/refresh",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"refresh"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "18. Logout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/logout",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "19. Test Access After Logout (Should Fail)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/expenses",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"expenses"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "⚠️ Error & Validation Tests",
+			"item": [
+				{
+					"name": "Invalid User Registration (Short Password)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Short Pass\",\n    \"email\": \"short@example.com\",\n    \"password\": \"123\",\n    \"confirm_password\": \"123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Invalid User Registration (Invalid Email)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Invalid Email\",\n    \"email\": \"not-an-email\",\n    \"password\": \"password123\",\n    \"confirm_password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Invalid Income Amount (Negative)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"amount\": -100.0,\n    \"description\": \"Negative Income\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/accounts/{{account_id}}/income",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"accounts",
+								"{{account_id}}",
+								"income"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Invalid Expense Amount (Zero)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user_id\": \"{{current_user_id}}\",\n    \"category_id\": \"{{category_id}}\",\n    \"account_id\": \"{{account_id}}\",\n    \"amount\": 0.0\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/expenses",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"expenses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Missing Required Fields in Expense",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/expenses",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"expenses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Test Insufficient Funds",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user_id\": \"{{current_user_id}}\",\n    \"category_id\": \"{{category_id}}\",\n    \"account_id\": \"{{account_id}}\",\n    \"amount\": 1000000.0,\n    \"description\": \"Large Purchase\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/expenses",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"expenses"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "🔗 Environment Setup",
+			"item": [
+				{
+					"name": "Set Environment Variables",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"instructions\": \"This is a dummy request to set environment variables in tests. Run the Complete JWT Auth Flow first.\"}"
+						},
+						"url": {
+							"raw": "{{base_url}}/healthcheck",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"healthcheck"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Log request information",
+					"console.log('Request:', pm.request.name);",
+					"console.log('Method:', pm.request.method);",
+					"console.log('URL:', pm.request.url.toString());",
+					"console.log('Timestamp:', new Date().toISOString());"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Set environment variables from responses",
+					"if (pm.response.code === 201 || pm.response.code === 200) {",
+					"    const responseData = pm.response.json();",
+					"    ",
+					"    // Set user_id and current_user_id from registration/login",
+					"    if ((pm.info.requestName === 'Register User' || pm.info.requestName === 'Login') && responseData.user) {",
+					"        pm.environment.set('current_user_id', responseData.user.id);",
+					"        pm.environment.set('user_id', responseData.user.id);",
+					"        console.log('Set current_user_id:', responseData.user.id);",
+					"    }",
+					"    ",
+					"    // Set access_token and refresh_token from login response",
+					"    if (pm.info.requestName === 'Login' && responseData.access_token) {",
+					"        pm.environment.set('access_token', responseData.access_token);",
+					"        pm.environment.set('refresh_token', responseData.refresh_token);",
+					"        console.log('Set access_token:', responseData.access_token.substring(0, 20) + '...');",
+					"    }",
+					"    ",
+					"    // Update access_token from refresh response",
+					"    if (pm.info.requestName === 'Refresh Token' && responseData.access_token) {",
+					"        pm.environment.set('access_token', responseData.access_token);",
+					"        console.log('Updated access_token:', responseData.access_token.substring(0, 20) + '...');",
+					"    }",
+					"    ",
+					"    // Set account_id from account responses",
+					"    if ((pm.info.requestName === 'Get User Accounts' || pm.info.requestName === 'Get All Accounts' || ",
+					"         pm.info.requestName === 'Get User\\'s Account') && responseData) {",
+					"        if (Array.isArray(responseData) && responseData.length > 0) {",
+					"            pm.environment.set('account_id', responseData[0].id);",
+					"            console.log('Set account_id:', responseData[0].id);",
+					"        } else if (responseData.id) {",
+					"            pm.environment.set('account_id', responseData.id);",
+					"            console.log('Set account_id:', responseData.id);",
+					"        }",
+					"    }",
+					"    ",
+					"    // Set category_id from category responses",
+					"    if ((pm.info.requestName === 'Create Personal Category' || ",
+					"         pm.info.requestName === 'Create Expense' || ",
+					"         pm.info.requestName === 'Get Global Categories') && responseData) {",
+					"        if (Array.isArray(responseData) && responseData.length > 0) {",
+					"            pm.environment.set('category_id', responseData[0].id);",
+					"            console.log('Set category_id:', responseData[0].id);",
+					"        } else if (responseData.id) {",
+					"            pm.environment.set('category_id', responseData.id);",
+					"            console.log('Set category_id:', responseData.id);",
+					"        }",
+					"    }",
+					"    ",
+					"    // Set expense_id from expense creation",
+					"    if (pm.info.requestName === 'Create Expense' && responseData.id) {",
+					"        pm.environment.set('expense_id', responseData.id);",
+					"        console.log('Set expense_id:', responseData.id);",
+					"    }",
+					"}",
+					"",
+					"// Test assertions",
+					"pm.test('Status code is as expected', function () {",
+					"    const requestName = pm.info.requestName;",
+					"    ",
+					"    // Define expected status codes based on request type",
+					"    if (requestName.includes('Invalid') || ",
+					"        requestName.includes('Missing') || ",
+					"        requestName.includes('Test Access Without Token') || ",
+					"        requestName.includes('Test Access With Invalid Token') || ",
+					"        requestName.includes('Test Access After Logout') || ",
+					"        requestName.includes('Test Access Other User')) {",
+					"        // Should fail with 400, 401, 403, or 422",
+					"        pm.expect(pm.response.code).to.be.oneOf([400, 401, 403, 422]);",
+					"    } else if (requestName.includes('Logout') || requestName.includes('Delete')) {",
+					"        // Logout and delete should return 200 or 204",
+					"        pm.expect(pm.response.code).to.be.oneOf([200, 204]);",
+					"    } else {",
+					"        // Normal requests should be successful",
+					"        pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+					"    }",
+					"});",
+					"",
+					"// Test response time",
+					"pm.test('Response time is acceptable', function () {",
+					"    pm.expect(pm.response.responseTime).to.be.below(2000);",
+					"});",
+					"",
+					"// Test content type for JSON responses",
+					"if (pm.response.code !== 204) {",
+					"    pm.test('Content-Type header is present', function () {",
+					"        pm.response.to.have.header('Content-Type');",
+					"    });",
+					"}",
+					"",
+					"// Specific tests for authentication responses",
+					"if (pm.info.requestName === 'Login' && pm.response.code === 200) {",
+					"    pm.test('Login response contains tokens', function () {",
+					"        const jsonData = pm.response.json();",
+					"        pm.expect(jsonData).to.have.property('access_token');",
+					"        pm.expect(jsonData).to.have.property('refresh_token');",
+					"        pm.expect(jsonData).to.have.property('user');",
+					"        pm.expect(jsonData.access_token).to.be.a('string');",
+					"        pm.expect(jsonData.access_token.length).to.be.greaterThan(10);",
+					"    });",
+					"}",
+					"",
+					"// Specific tests for registration",
+					"if (pm.info.requestName === 'Register User' && pm.response.code === 201) {",
+					"    pm.test('Registration response contains user data', function () {",
+					"        const jsonData = pm.response.json();",
+					"        pm.expect(jsonData).to.have.property('id');",
+					"        pm.expect(jsonData).to.have.property('name');",
+					"        pm.expect(jsonData).to.have.property('email');",
+					"        pm.expect(jsonData).to.not.have.property('password_hash');",
+					"    });",
+					"}",
+					"",
+					"// Specific tests for error responses",
+					"if (pm.response.code === 400 || pm.response.code === 401 || pm.response.code === 403 || pm.response.code === 422) {",
+					"    pm.test('Error response has correct structure', function () {",
+					"        const jsonData = pm.response.json();",
+					"        pm.expect(jsonData).to.have.property('error');",
+					"        pm.expect(jsonData).to.have.property('message');",
+					"    });",
+					"}",
+					"",
+					"// Test for JWT specific errors",
+					"if (pm.response.code === 401 && (pm.info.requestName.includes('Token') || pm.info.requestName.includes('Access'))) {",
+					"    pm.test('JWT error response', function () {",
+					"        const jsonData = pm.response.json();",
+					"        // JWT errors should have specific error types",
+					"        const expectedErrors = ['token_expired', 'invalid_token', 'authorization_required'];",
+					"        if (jsonData.error) {",
+					"            pm.expect(expectedErrors).to.include(jsonData.error);",
+					"        }",
+					"    });",
+					"}",
+					"",
+					"// Test for successful protected endpoint access",
+					"if (pm.response.code === 200 && pm.info.requestName.includes('(Auth Required)')) {",
+					"    pm.test('Protected endpoint accessible with token', function () {",
+					"        const jsonData = pm.response.json();",
+					"        // Should not have authorization errors",
+					"        pm.expect(jsonData).to.not.have.property('authorization_required');",
+					"    });",
+					"}"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:5000",
+			"description": "Base URL for API"
+		},
+		{
+			"key": "access_token",
+			"value": "",
+			"description": "JWT Access Token (auto-set from login)"
+		},
+		{
+			"key": "refresh_token",
+			"value": "",
+			"description": "JWT Refresh Token (auto-set from login)"
+		},
+		{
+			"key": "current_user_id",
+			"value": "",
+			"description": "Current User ID (auto-set from auth responses)"
+		},
+		{
+			"key": "user_id",
+			"value": "",
+			"description": "User ID (legacy, auto-set from responses)"
+		},
+		{
+			"key": "account_id",
+			"value": "",
+			"description": "Account ID (auto-set from responses)"
+		},
+		{
+			"key": "category_id",
+			"value": "",
+			"description": "Category ID (auto-set from responses)"
+		},
+		{
+			"key": "expense_id",
+			"value": "",
+			"description": "Expense ID (auto-set from responses)"
+		}
+	],
+	"auth": null
+}
