@@ -1,194 +1,204 @@
-import unittest
+import pytest
 import json
-from app import app
-from app.models import data_store
+from app import create_app, db
+from app.models.user import User
+from app.models.category import Category
+from app.models.account import Account
+from app.models.expense import Expense
+from app.models.income import Income
 
+@pytest.fixture
+def app():
+    """Create and configure a new app instance for each test."""
+    app = create_app('testing')
+    
+    with app.app_context():
+        db.create_all()
+        yield app
+        db.session.remove()
+        db.drop_all()
 
-class APITestCase(unittest.TestCase):
-    def setUp(self):
-        self.app = app.test_client()
-        self.app.testing = True
+@pytest.fixture
+def client(app):
+    """A test client for the app."""
+    return app.test_client()
 
-        data_store.users.clear()
-        data_store.categories.clear()
-        data_store.records.clear()
+@pytest.fixture
+def auth_headers():
+    """Default headers for authenticated requests."""
+    return {
+        'Content-Type': 'application/json'
+    }
 
-        self.user1 = data_store.add_user("Test User 1")
-        self.user2 = data_store.add_user("Test User 2")
-        self.category1 = data_store.add_category("Test Category 1")
-        self.category2 = data_store.add_category("Test Category 2")
-        self.record1 = data_store.add_record(self.user1.id, self.category1.id, 100.0)
-        self.record2 = data_store.add_record(self.user2.id, self.category2.id, 200.0)
+def test_healthcheck(client):
+    """Test healthcheck endpoint."""
+    response = client.get('/healthcheck')
+    assert response.status_code == 200
+    data = json.loads(response.data)
+    assert data['status'] == 'healthy'
 
-    def test_healthcheck(self):
-        """Test healthcheck endpoint"""
-        response = self.app.get('/healthcheck')
-        self.assertEqual(response.status_code, 200)
-        data = json.loads(response.data)
-        self.assertIn('date', data)
-        self.assertIn('status', data)
-        self.assertEqual(data['status'], 'healthy')
+def test_create_user(client, auth_headers):
+    """Test creating a new user."""
+    user_data = {
+        'name': 'Test User'
+    }
     
-    # User endpoint tests
-    def test_get_user(self):
-        """Test get user by ID"""
-        response = self.app.get(f'/user/{self.user1.id}')
-        self.assertEqual(response.status_code, 200)
-        data = json.loads(response.data)
-        self.assertEqual(data['name'], 'Test User 1')
+    response = client.post('/api/users', 
+                          data=json.dumps(user_data),
+                          headers=auth_headers)
     
-    def test_get_nonexistent_user(self):
-        """Test get nonexistent user"""
-        response = self.app.get('/user/nonexistent')
-        self.assertEqual(response.status_code, 404)
-    
-    def test_create_user(self):
-        """Test create new user"""
-        new_user = {'name': 'New Test User'}
-        response = self.app.post('/user', 
-                                data=json.dumps(new_user),
-                                content_type='application/json')
-        self.assertEqual(response.status_code, 201)
-        data = json.loads(response.data)
-        self.assertEqual(data['name'], 'New Test User')
-        self.assertIn('id', data)
-    
-    def test_create_user_invalid_data(self):
-        """Test create user with invalid data"""
-        # Missing name
-        response = self.app.post('/user',
-                                data=json.dumps({}),
-                                content_type='application/json')
-        self.assertEqual(response.status_code, 400)
-        
-        # Empty name
-        response = self.app.post('/user',
-                                data=json.dumps({'name': ''}),
-                                content_type='application/json')
-        self.assertEqual(response.status_code, 400)
-    
-    def test_get_all_users(self):
-        """Test get all users"""
-        response = self.app.get('/users')
-        self.assertEqual(response.status_code, 200)
-        data = json.loads(response.data)
-        self.assertGreaterEqual(len(data), 2)
-    
-    def test_delete_user(self):
-        """Test delete user"""
-        response = self.app.delete(f'/user/{self.user1.id}')
-        self.assertEqual(response.status_code, 200)
-        
-        # Verify user is deleted
-        response = self.app.get(f'/user/{self.user1.id}')
-        self.assertEqual(response.status_code, 404)
-    
-    # Category endpoint tests
-    def test_get_all_categories(self):
-        """Test get all categories"""
-        response = self.app.get('/category')
-        self.assertEqual(response.status_code, 200)
-        data = json.loads(response.data)
-        self.assertGreaterEqual(len(data), 2)
-    
-    def test_create_category(self):
-        """Test create new category"""
-        new_category = {'name': 'New Category'}
-        response = self.app.post('/category',
-                                data=json.dumps(new_category),
-                                content_type='application/json')
-        self.assertEqual(response.status_code, 201)
-        data = json.loads(response.data)
-        self.assertEqual(data['name'], 'New Category')
-    
-    def test_delete_category(self):
-        """Test delete category"""
-        response = self.app.delete(f'/category/{self.category1.id}')
-        self.assertEqual(response.status_code, 200)
-        
-        # Verify category is deleted
-        response = self.app.get(f'/category')
-        data = json.loads(response.data)
-        category_ids = [cat['id'] for cat in data]
-        self.assertNotIn(self.category1.id, category_ids)
-    
-    # Record endpoint tests
-    def test_get_record(self):
-        """Test get record by ID"""
-        response = self.app.get(f'/record/{self.record1.id}')
-        self.assertEqual(response.status_code, 200)
-        data = json.loads(response.data)
-        self.assertEqual(data['amount'], 100.0)
-        self.assertEqual(data['user_id'], self.user1.id)
-    
-    def test_create_record(self):
-        """Test create new record"""
-        new_record = {
-            'user_id': self.user1.id,
-            'category_id': self.category1.id,
-            'amount': 150.0
-        }
-        response = self.app.post('/record',
-                                data=json.dumps(new_record),
-                                content_type='application/json')
-        self.assertEqual(response.status_code, 201)
-        data = json.loads(response.data)
-        self.assertEqual(data['amount'], 150.0)
-    
-    def test_create_record_invalid_data(self):
-        """Test create record with invalid data"""
-        # Missing required fields
-        response = self.app.post('/record',
-                                data=json.dumps({}),
-                                content_type='application/json')
-        self.assertEqual(response.status_code, 400)
-        
-        # Invalid user/category
-        invalid_record = {
-            'user_id': 'invalid',
-            'category_id': 'invalid',
-            'amount': 100.0
-        }
-        response = self.app.post('/record',
-                                data=json.dumps(invalid_record),
-                                content_type='application/json')
-        self.assertEqual(response.status_code, 404)
-    
-    def test_delete_record(self):
-        """Test delete record"""
-        response = self.app.delete(f'/record/{self.record1.id}')
-        self.assertEqual(response.status_code, 200)
-        
-        # Verify record is deleted
-        response = self.app.get(f'/record/{self.record1.id}')
-        self.assertEqual(response.status_code, 404)
-    
-    def test_get_records_with_filters(self):
-        """Test get records with filters"""
-        # Filter by user_id
-        response = self.app.get(f'/record?user_id={self.user1.id}')
-        self.assertEqual(response.status_code, 200)
-        data = json.loads(response.data)
-        self.assertEqual(len(data), 1)
-        self.assertEqual(data[0]['user_id'], self.user1.id)
-        
-        # Filter by category_id
-        response = self.app.get(f'/record?category_id={self.category2.id}')
-        self.assertEqual(response.status_code, 200)
-        data = json.loads(response.data)
-        self.assertEqual(len(data), 1)
-        self.assertEqual(data[0]['category_id'], self.category2.id)
-        
-        # Filter by both
-        response = self.app.get(f'/record?user_id={self.user1.id}&category_id={self.category1.id}')
-        self.assertEqual(response.status_code, 200)
-        data = json.loads(response.data)
-        self.assertEqual(len(data), 1)
-        
-        # No filters (should error)
-        response = self.app.get('/record')
-        self.assertEqual(response.status_code, 400)
+    assert response.status_code == 201
+    data = json.loads(response.data)
+    assert data['name'] == 'Test User'
+    assert 'id' in data
 
+def test_create_account(client, auth_headers):
+    """Test creating a new account."""
+    # First create a user
+    user_response = client.post('/api/users',
+                               data=json.dumps({'name': 'Account User'}),
+                               headers=auth_headers)
+    user_id = json.loads(user_response.data)['id']
+    
+    # Create account for user
+    account_data = {
+        'user_id': user_id
+    }
+    
+    response = client.post('/api/accounts',
+                          data=json.dumps(account_data),
+                          headers=auth_headers)
+    
+    assert response.status_code == 201
+    data = json.loads(response.data)
+    assert data['user_id'] == user_id
+    assert data['balance'] == 0.0
 
-if __name__ == '__main__':
-    unittest.main()
+def test_add_income(client, auth_headers):
+    """Test adding income to account."""
+    # Create user and account
+    user_response = client.post('/api/users',
+                               data=json.dumps({'name': 'Income User'}),
+                               headers=auth_headers)
+    user_id = json.loads(user_response.data)['id']
+    
+    # Get user's account
+    accounts_response = client.get(f'/api/accounts?user_id={user_id}')
+    account_id = json.loads(accounts_response.data)[0]['id']
+    
+    # Add income
+    income_data = {
+        'amount': 1000.0,
+        'description': 'Salary'
+    }
+    
+    response = client.post(f'/api/accounts/{account_id}/income',
+                          data=json.dumps(income_data),
+                          headers=auth_headers)
+    
+    assert response.status_code == 201
+    data = json.loads(response.data)
+    assert data['amount'] == 1000.0
+    assert data['description'] == 'Salary'
+    
+    # Check balance updated
+    balance_response = client.get(f'/api/accounts/{account_id}/balance')
+    balance_data = json.loads(balance_response.data)
+    assert balance_data['balance'] == 1000.0
+
+def test_create_expense(client, auth_headers):
+    """Test creating an expense with account withdrawal."""
+    # Create user, account, and category
+    user_response = client.post('/api/users',
+                               data=json.dumps({'name': 'Expense User'}),
+                               headers=auth_headers)
+    user_id = json.loads(user_response.data)['id']
+    
+    # Get user's account
+    accounts_response = client.get(f'/api/accounts?user_id={user_id}')
+    account_id = json.loads(accounts_response.data)[0]['id']
+    
+    # Get a category
+    categories_response = client.get('/api/categories')
+    category_id = json.loads(categories_response.data)[0]['id']
+    
+    # Add income first
+    income_data = {'amount': 500.0, 'description': 'Initial deposit'}
+    client.post(f'/api/accounts/{account_id}/income',
+                data=json.dumps(income_data),
+                headers=auth_headers)
+    
+    # Create expense
+    expense_data = {
+        'user_id': user_id,
+        'category_id': category_id,
+        'account_id': account_id,
+        'amount': 100.0,
+        'description': 'Lunch'
+    }
+    
+    response = client.post('/api/expenses',
+                          data=json.dumps(expense_data),
+                          headers=auth_headers)
+    
+    assert response.status_code == 201
+    data = json.loads(response.data)
+    assert data['amount'] == 100.0
+    
+    # Check balance after expense
+    balance_response = client.get(f'/api/accounts/{account_id}/balance')
+    balance_data = json.loads(balance_response.data)
+    assert balance_data['balance'] == 400.0  # 500 - 100
+
+def test_insufficient_funds(client, auth_headers):
+    """Test creating expense with insufficient funds."""
+    # Create user, account, and category
+    user_response = client.post('/api/users',
+                               data=json.dumps({'name': 'Poor User'}),
+                               headers=auth_headers)
+    user_id = json.loads(user_response.data)['id']
+    
+    # Get user's account
+    accounts_response = client.get(f'/api/accounts?user_id={user_id}')
+    account_id = json.loads(accounts_response.data)[0]['id']
+    
+    # Get a category
+    categories_response = client.get('/api/categories')
+    category_id = json.loads(categories_response.data)[0]['id']
+    
+    # Try to create expense without funds
+    expense_data = {
+        'user_id': user_id,
+        'category_id': category_id,
+        'account_id': account_id,
+        'amount': 100.0
+    }
+    
+    response = client.post('/api/expenses',
+                          data=json.dumps(expense_data),
+                          headers=auth_headers)
+    
+    assert response.status_code == 400
+    data = json.loads(response.data)
+    assert 'Insufficient funds' in data['message']
+
+def test_validation_errors(client, auth_headers):
+    """Test validation errors."""
+    # Test invalid user creation
+    invalid_user = {'name': ''}
+    response = client.post('/api/users',
+                          data=json.dumps(invalid_user),
+                          headers=auth_headers)
+    assert response.status_code == 422
+    
+    # Test invalid expense
+    invalid_expense = {
+        'user_id': 'invalid',
+        'category_id': 'invalid',
+        'account_id': 'invalid',
+        'amount': -100  # Negative amount
+    }
+    response = client.post('/api/expenses',
+                          data=json.dumps(invalid_expense),
+                          headers=auth_headers)
+    assert response.status_code == 422

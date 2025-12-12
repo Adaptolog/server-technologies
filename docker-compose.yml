@@ -24,17 +24,21 @@ services:
     ports:
       - "5000:5000"
     environment:
-      - PORT=5000
+      - FLASK_APP=wsgi.py
       - FLASK_ENV=development
       - DATABASE_URL=postgresql://expense_user:expense_password@db:5432/expense_tracker
-      - SECRET_KEY=your-secret-key-here-change-in-production
+      - SECRET_KEY=dev-secret-key-change-in-production
     volumes:
       - ./app:/app/app
+      - ./config.py:/app/config.py
+      - ./wsgi.py:/app/wsgi.py
       - ./run.py:/app/run.py
     depends_on:
       db:
         condition: service_healthy
     restart: unless-stopped
+    command: >
+      sh -c "python run.py"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5000/healthcheck"]
       interval: 30s

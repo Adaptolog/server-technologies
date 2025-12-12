@@ -1,27 +1,72 @@
 {
 	"info": {
 		"_postman_id": "6b5b5b5b-5b5b-5b5b-5b5b-5b5b5b5b5b5b",
-		"name": "Expense Tracker API",
+		"name": "Expense Tracker API v2.0",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "123456"
+		"_exporter_id": "123456",
+		"description": "API для обліку витрат з обліком доходів (Лабораторна робота 3)"
 	},
 	"item": [
 		{
-			"name": "Healthcheck",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{base_url}}/healthcheck",
-					"host": ["{{base_url}}"],
-					"path": ["healthcheck"]
+			"name": "Healthcheck & Info",
+			"item": [
+				{
+					"name": "Healthcheck",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/healthcheck",
+							"host": ["{{base_url}}"],
+							"path": ["healthcheck"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get API Info",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/",
+							"host": ["{{base_url}}"],
+							"path": [""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Swagger UI",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/swagger-ui",
+							"host": ["{{base_url}}"],
+							"path": ["swagger-ui"]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
 			"name": "Users",
 			"item": [
+				{
+					"name": "Get All Users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/users",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users"]
+						}
+					},
+					"response": []
+				},
 				{
 					"name": "Create User",
 					"request": {
@@ -37,22 +82,9 @@
 							"raw": "{\n    \"name\": \"John Doe\"\n}"
 						},
 						"url": {
-							"raw": "{{base_url}}/user",
+							"raw": "{{base_url}}/api/users",
 							"host": ["{{base_url}}"],
-							"path": ["user"]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get All Users",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/users",
-							"host": ["{{base_url}}"],
-							"path": ["users"]
+							"path": ["api", "users"]
 						}
 					},
 					"response": []
@@ -63,15 +95,31 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/user/:user_id",
+							"raw": "{{base_url}}/api/users/{{user_id}}",
 							"host": ["{{base_url}}"],
-							"path": ["user", ":user_id"],
-							"variable": [
-								{
-									"key": "user_id",
-									"value": ""
-								}
-							]
+							"path": ["api", "users", "{{user_id}}"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"John Smith\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/{{user_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "{{user_id}}"]
 						}
 					},
 					"response": []
@@ -82,13 +130,168 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/user/:user_id",
+							"raw": "{{base_url}}/api/users/{{user_id}}",
 							"host": ["{{base_url}}"],
-							"path": ["user", ":user_id"],
-							"variable": [
+							"path": ["api", "users", "{{user_id}}"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Accounts (Нові)",
+			"item": [
+				{
+					"name": "Get All Accounts",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/accounts",
+							"host": ["{{base_url}}"],
+							"path": ["api", "accounts"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Accounts",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/accounts?user_id={{user_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "accounts"],
+							"query": [
 								{
 									"key": "user_id",
-									"value": ""
+									"value": "{{user_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Account",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user_id\": \"{{user_id}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/accounts",
+							"host": ["{{base_url}}"],
+							"path": ["api", "accounts"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Account by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/accounts/{{account_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "accounts", "{{account_id}}"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Account",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/accounts/{{account_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "accounts", "{{account_id}}"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Account Balance",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/accounts/{{account_id}}/balance",
+							"host": ["{{base_url}}"],
+							"path": ["api", "accounts", "{{account_id}}", "balance"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Income Management (Нові)",
+			"item": [
+				{
+					"name": "Add Income to Account",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"amount\": 1000.0,\n    \"description\": \"Salary\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/accounts/{{account_id}}/income",
+							"host": ["{{base_url}}"],
+							"path": ["api", "accounts", "{{account_id}}", "income"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Income History",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/accounts/{{account_id}}/income",
+							"host": ["{{base_url}}"],
+							"path": ["api", "accounts", "{{account_id}}", "income"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Income History with Date Range",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/accounts/{{account_id}}/income?start_date=2024-01-01&end_date=2024-12-31",
+							"host": ["{{base_url}}"],
+							"path": ["api", "accounts", "{{account_id}}", "income"],
+							"query": [
+								{
+									"key": "start_date",
+									"value": "2024-01-01"
+								},
+								{
+									"key": "end_date",
+									"value": "2024-12-31"
 								}
 							]
 						}
@@ -101,7 +304,39 @@
 			"name": "Categories",
 			"item": [
 				{
-					"name": "Create Category",
+					"name": "Get All Categories",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/categories",
+							"host": ["{{base_url}}"],
+							"path": ["api", "categories"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Categories",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/categories?user_id={{user_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "categories"],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "{{user_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Global Category",
 					"request": {
 						"method": "POST",
 						"header": [
@@ -112,25 +347,69 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"Food\"\n}"
+							"raw": "{\n    \"name\": \"Food\",\n    \"is_global\": true\n}"
 						},
 						"url": {
-							"raw": "{{base_url}}/category",
+							"raw": "{{base_url}}/api/categories",
 							"host": ["{{base_url}}"],
-							"path": ["category"]
+							"path": ["api", "categories"]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "Get All Categories",
+					"name": "Create User Category",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Personal Expense\",\n    \"is_global\": false,\n    \"user_id\": \"{{user_id}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/categories",
+							"host": ["{{base_url}}"],
+							"path": ["api", "categories"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Category by ID",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/category",
+							"raw": "{{base_url}}/api/categories/{{category_id}}",
 							"host": ["{{base_url}}"],
-							"path": ["category"]
+							"path": ["api", "categories", "{{category_id}}"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Category",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Updated Category Name\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/categories/{{category_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "categories", "{{category_id}}"]
 						}
 					},
 					"response": []
@@ -141,15 +420,9 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/category/:category_id",
+							"raw": "{{base_url}}/api/categories/{{category_id}}",
 							"host": ["{{base_url}}"],
-							"path": ["category", ":category_id"],
-							"variable": [
-								{
-									"key": "category_id",
-									"value": ""
-								}
-							]
+							"path": ["api", "categories", "{{category_id}}"]
 						}
 					},
 					"response": []
@@ -157,10 +430,42 @@
 			]
 		},
 		{
-			"name": "Expense Records",
+			"name": "Expenses (Оновлені)",
 			"item": [
 				{
-					"name": "Create Record",
+					"name": "Get All Expenses",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/expenses",
+							"host": ["{{base_url}}"],
+							"path": ["api", "expenses"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Expenses",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/expenses?user_id={{user_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "expenses"],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "{{user_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Expense",
 					"request": {
 						"method": "POST",
 						"header": [
@@ -171,73 +476,38 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"user_id\": \"\",\n    \"category_id\": \"\",\n    \"amount\": 50.0\n}"
+							"raw": "{\n    \"user_id\": \"{{user_id}}\",\n    \"category_id\": \"{{category_id}}\",\n    \"account_id\": \"{{account_id}}\",\n    \"amount\": 100.0,\n    \"description\": \"Lunch\"\n}"
 						},
 						"url": {
-							"raw": "{{base_url}}/record",
+							"raw": "{{base_url}}/api/expenses",
 							"host": ["{{base_url}}"],
-							"path": ["record"]
+							"path": ["api", "expenses"]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "Get Record by ID",
+					"name": "Get Expense by ID",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/record/:record_id",
+							"raw": "{{base_url}}/api/expenses/{{expense_id}}",
 							"host": ["{{base_url}}"],
-							"path": ["record", ":record_id"],
-							"variable": [
-								{
-									"key": "record_id",
-									"value": ""
-								}
-							]
+							"path": ["api", "expenses", "{{expense_id}}"]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "Get Records with Filters",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/record?user_id=&category_id=",
-							"host": ["{{base_url}}"],
-							"path": ["record"],
-							"query": [
-								{
-									"key": "user_id",
-									"value": ""
-								},
-								{
-									"key": "category_id",
-									"value": ""
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete Record",
+					"name": "Delete Expense",
 					"request": {
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/record/:record_id",
+							"raw": "{{base_url}}/api/expenses/{{expense_id}}",
 							"host": ["{{base_url}}"],
-							"path": ["record", ":record_id"],
-							"variable": [
-								{
-									"key": "record_id",
-									"value": ""
-								}
-							]
+							"path": ["api", "expenses", "{{expense_id}}"]
 						}
 					},
 					"response": []
@@ -245,7 +515,7 @@
 			]
 		},
 		{
-			"name": "Complete Flow",
+			"name": "Complete Flow - Облік доходів",
 			"item": [
 				{
 					"name": "1. Health Check",
@@ -275,66 +545,22 @@
 							"raw": "{\n    \"name\": \"Test User\"\n}"
 						},
 						"url": {
-							"raw": "{{base_url}}/user",
+							"raw": "{{base_url}}/api/users",
 							"host": ["{{base_url}}"],
-							"path": ["user"]
+							"path": ["api", "users"]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "3. Create Category",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"name\": \"Test Category\"\n}"
-						},
-						"url": {
-							"raw": "{{base_url}}/category",
-							"host": ["{{base_url}}"],
-							"path": ["category"]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "4. Create Expense Record",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"user_id\": \"{{user_id}}\",\n    \"category_id\": \"{{category_id}}\",\n    \"amount\": 100.0\n}"
-						},
-						"url": {
-							"raw": "{{base_url}}/record",
-							"host": ["{{base_url}}"],
-							"path": ["record"]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "5. Get User Records",
+					"name": "3. Get User Account",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/record?user_id={{user_id}}",
+							"raw": "{{base_url}}/api/accounts?user_id={{user_id}}",
 							"host": ["{{base_url}}"],
-							"path": ["record"],
+							"path": ["api", "accounts"],
 							"query": [
 								{
 									"key": "user_id",
@@ -346,14 +572,237 @@
 					"response": []
 				},
 				{
-					"name": "6. Cleanup - Delete Record",
+					"name": "4. Add Income to Account",
 					"request": {
-						"method": "DELETE",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"amount\": 1000.0,\n    \"description\": \"Salary\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/accounts/{{account_id}}/income",
+							"host": ["{{base_url}}"],
+							"path": ["api", "accounts", "{{account_id}}", "income"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "5. Check Account Balance",
+					"request": {
+						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/record/{{record_id}}",
+							"raw": "{{base_url}}/api/accounts/{{account_id}}/balance",
 							"host": ["{{base_url}}"],
-							"path": ["record", "{{record_id}}"]
+							"path": ["api", "accounts", "{{account_id}}", "balance"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "6. Get Categories",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/categories?user_id={{user_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "categories"],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "{{user_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "7. Create Expense",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user_id\": \"{{user_id}}\",\n    \"category_id\": \"{{category_id}}\",\n    \"account_id\": \"{{account_id}}\",\n    \"amount\": 250.0,\n    \"description\": \"Groceries\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/expenses",
+							"host": ["{{base_url}}"],
+							"path": ["api", "expenses"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "8. Check Updated Balance",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/accounts/{{account_id}}/balance",
+							"host": ["{{base_url}}"],
+							"path": ["api", "accounts", "{{account_id}}", "balance"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "9. Get Income History",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/accounts/{{account_id}}/income",
+							"host": ["{{base_url}}"],
+							"path": ["api", "accounts", "{{account_id}}", "income"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "10. Get User Expenses",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/expenses?user_id={{user_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "expenses"],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "{{user_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "11. Test Insufficient Funds",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user_id\": \"{{user_id}}\",\n    \"category_id\": \"{{category_id}}\",\n    \"account_id\": \"{{account_id}}\",\n    \"amount\": 10000.0,\n    \"description\": \"Large Purchase\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/expenses",
+							"host": ["{{base_url}}"],
+							"path": ["api", "expenses"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Validation Tests",
+			"item": [
+				{
+					"name": "Invalid User Creation",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Invalid Income Amount",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"amount\": -100.0\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/accounts/{{account_id}}/income",
+							"host": ["{{base_url}}"],
+							"path": ["api", "accounts", "{{account_id}}", "income"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Invalid Expense Amount",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user_id\": \"{{user_id}}\",\n    \"category_id\": \"{{category_id}}\",\n    \"account_id\": \"{{account_id}}\",\n    \"amount\": 0.0\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/expenses",
+							"host": ["{{base_url}}"],
+							"path": ["api", "expenses"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Missing Required Fields",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/expenses",
+							"host": ["{{base_url}}"],
+							"path": ["api", "expenses"]
 						}
 					},
 					"response": []
@@ -367,7 +816,10 @@
 			"script": {
 				"type": "text/javascript",
 				"exec": [
-					""
+					"// Log request information",
+					"console.log('Request:', pm.request.name);",
+					"console.log('Method:', pm.request.method);",
+					"console.log('URL:', pm.request.url.toString());"
 				]
 			}
 		},
@@ -383,23 +835,87 @@
 					"    // Set user_id from user creation",
 					"    if (pm.info.requestName === 'Create User' && responseData.id) {",
 					"        pm.environment.set('user_id', responseData.id);",
+					"        console.log('Set user_id:', responseData.id);",
 					"    }",
 					"    ",
-					"    // Set category_id from category creation",
-					"    if (pm.info.requestName === 'Create Category' && responseData.id) {",
-					"        pm.environment.set('category_id', responseData.id);",
+					"    // Set account_id from account creation or retrieval",
+					"    if ((pm.info.requestName === 'Create Account' || pm.info.requestName === 'Get User Accounts') && responseData.id) {",
+					"        if (Array.isArray(responseData)) {",
+					"            if (responseData.length > 0) {",
+					"                pm.environment.set('account_id', responseData[0].id);",
+					"                console.log('Set account_id:', responseData[0].id);",
+					"            }",
+					"        } else {",
+					"            pm.environment.set('account_id', responseData.id);",
+					"            console.log('Set account_id:', responseData.id);",
+					"        }",
 					"    }",
 					"    ",
-					"    // Set record_id from record creation",
-					"    if (pm.info.requestName === 'Create Expense Record' && responseData.id) {",
-					"        pm.environment.set('record_id', responseData.id);",
+					"    // Set category_id from category creation or retrieval",
+					"    if ((pm.info.requestName === 'Create Global Category' || ",
+					"         pm.info.requestName === 'Create User Category' || ",
+					"         pm.info.requestName === 'Get Categories') && responseData.id) {",
+					"        if (Array.isArray(responseData)) {",
+					"            if (responseData.length > 0) {",
+					"                pm.environment.set('category_id', responseData[0].id);",
+					"                console.log('Set category_id:', responseData[0].id);",
+					"            }",
+					"        } else {",
+					"            pm.environment.set('category_id', responseData.id);",
+					"            console.log('Set category_id:', responseData.id);",
+					"        }",
 					"    }",
-						"}",
+					"    ",
+					"    // Set expense_id from expense creation",
+					"    if (pm.info.requestName === 'Create Expense' && responseData.id) {",
+					"        pm.environment.set('expense_id', responseData.id);",
+					"        console.log('Set expense_id:', responseData.id);",
+					"    }",
+					"}",
 					"",
 					"// Test assertions",
 					"pm.test('Status code is successful', function () {",
-					"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
-					"});"
+					"    // For validation tests, we expect 422 or 400",
+					"    if (pm.info.requestName.includes('Invalid') || pm.info.requestName.includes('Missing')) {",
+					"        pm.expect(pm.response.code).to.be.oneOf([400, 422]);",
+					"    } else {",
+					"        pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+					"    }",
+					"});",
+					"",
+					"// Test response time",
+					"pm.test('Response time is less than 1000ms', function () {",
+					"    pm.expect(pm.response.responseTime).to.be.below(1000);",
+					"});",
+					"",
+					"// Test content type",
+					"pm.test('Content-Type is present', function () {",
+					"    pm.response.to.have.header('Content-Type');",
+					"});",
+					"",
+					"// Specific tests for successful responses",
+					"if (pm.response.code === 200 || pm.response.code === 201) {",
+					"    pm.test('Response has expected structure', function () {",
+					"        const jsonData = pm.response.json();",
+					"        ",
+					"        // Check common properties",
+					"        if (jsonData.id) {",
+					"            pm.expect(jsonData.id).to.be.a('string');",
+					"        }",
+					"        ",
+					"        // Check for error in response",
+					"        pm.expect(jsonData).to.not.have.property('error');",
+					"    });",
+					"}",
+					"",
+					"// Specific tests for validation errors",
+					"if (pm.response.code === 422 || pm.response.code === 400) {",
+					"    pm.test('Error response has correct structure', function () {",
+					"        const jsonData = pm.response.json();",
+					"        pm.expect(jsonData).to.have.property('error');",
+					"        pm.expect(jsonData).to.have.property('message');",
+					"    });",
+					"}"
 				]
 			}
 		}
@@ -407,19 +923,29 @@
 	"variable": [
 		{
 			"key": "base_url",
-			"value": ""
+			"value": "http://localhost:5000",
+			"description": "Base URL for API"
 		},
 		{
 			"key": "user_id",
-			"value": ""
+			"value": "",
+			"description": "User ID (auto-set from responses)"
+		},
+		{
+			"key": "account_id",
+			"value": "",
+			"description": "Account ID (auto-set from responses)"
 		},
 		{
 			"key": "category_id",
-			"value": ""
+			"value": "",
+			"description": "Category ID (auto-set from responses)"
 		},
 		{
-			"key": "record_id",
-			"value": ""
+			"key": "expense_id",
+			"value": "",
+			"description": "Expense ID (auto-set from responses)"
 		}
-	]
+	],
+	"auth": null
 }
